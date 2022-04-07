@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    ports:
+      - "11:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
+    networks:
+      - nestjstutorial
+networks:
+  nestjstutorial:
