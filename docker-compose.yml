@@ -3,11 +3,11 @@ services:
   db:
     image: postgres:14
     ports:
-      - "11:5432"
+      - "${DB_HOST}:5432"
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     networks:
       - nestjstutorial
 networks:
