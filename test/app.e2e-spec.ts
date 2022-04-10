@@ -4,6 +4,7 @@ import * as pactum from 'pactum';
 
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { AuthDto } from '../src/auth/dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -31,18 +32,92 @@ describe('App e2e', () => {
   });
 
   describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'test@gmail.com',
+      password: '123456789',
+    };
+
     describe('Signup', () => {
-      it.todo('should signup');
+      it('should throw if email empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody({
+            password: dto.password,
+          })
+          .expectStatus(400);
+      });
+
+      it('should throw if password empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody({
+            email: dto.email,
+          })
+          .expectStatus(400);
+      });
+
+      it('should throw if no body provided', () => {
+        return pactum.spec().post('/auth/signup').expectStatus(400);
+      });
+
+      it('should signup', () => {
+        return pactum
+          .spec()
+          .withBody(dto)
+          .post('/auth/signup')
+          .expectStatus(201);
+      });
     });
 
     describe('Signin', () => {
-      it.todo('should signin');
+      it('should throw if email empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody({
+            password: dto.password,
+          })
+          .expectStatus(400);
+      });
+
+      it('should throw if password empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody({
+            email: dto.email,
+          })
+          .expectStatus(400);
+      });
+
+      it('should throw if no body provided', () => {
+        return pactum.spec().post('/auth/signin').expectStatus(400);
+      });
+
+      it('should signin', () => {
+        return pactum
+          .spec()
+          .withBody(dto)
+          .post('/auth/signin')
+          .expectStatus(200)
+          .stores('userAt', 'access_token');
+      });
     });
   });
 
   describe('User', () => {
     describe('Get me', () => {
-
+      it('should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200);
+      });
     });
 
     describe('Edit user', () => {
